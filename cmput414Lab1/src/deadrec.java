@@ -10,6 +10,9 @@ public class deadrec {
 	static double distPerTick = P / 360;
 	static double ticksPerRotation =  Pprime / distPerTick;
 	static double radiansPerTick = (2 * Math.PI) / ticksPerRotation;
+	static double totalHeading;
+	static double X;
+	static double Y;
 	
 	public static void main(String[] args) {
 		int[][] command = {
@@ -18,9 +21,9 @@ public class deadrec {
 			      {	80, 80, 1}
 			    };		
 		
-		double totalHeading = 0;
-		double X = 0;
-		double Y = 0;
+		totalHeading = 0;
+		X = 0;
+		Y = 0;
 		 
 		for (int i = 0; i < 3; i++){
 			int powerA = command[i][0];
@@ -37,36 +40,45 @@ public class deadrec {
 	        MotorPort.C.resetTachoCount();
 	        
 			while(true){
-				int leftTick = MotorPort.A.getTachoCount();
-				int rightTick = MotorPort.C.getTachoCount();
-				MotorPort.A.resetTachoCount();
-		        MotorPort.C.resetTachoCount();
-		        
-				double deltaDistance = (leftTick + rightTick) / 2 * distPerTick;
-				double deltaHeading = ((rightTick - leftTick) * radiansPerTick) / 2;	
-				
-				totalHeading += deltaHeading;
-				
-				double deltaX = deltaDistance * Math.cos(totalHeading);
-				double deltaY = deltaDistance * Math.sin(totalHeading);
-				
-				X += deltaX;
-				Y += deltaY;
+				processData();
 				
 				if (System.currentTimeMillis() - intervalTimer > timeInterval*1000){
 					break;
 				}
 			}
+			
+			processData();
 		}
 		
 		
 		MotorPort.A.controlMotor(100, BasicMotorPort.STOP);
         MotorPort.C.controlMotor(100, BasicMotorPort.STOP);
+        
+        processData();
 		   
-        System.out.println("Heading: " + Math.floor((totalHeading * 180/Math.PI)* 100) / 100);
+        System.out.println("Heading: " + Math.floor((totalHeading * 180/Math.PI)* 100) / 100 + "°");
+        System.out.println("X: " + Math.floor(X* 100) / 100 + " mm");
+        System.out.println("Y: " + Math.floor(Y* 100) / 100 + " mm");
         
         Button.waitForPress();
 
 	}
 
+	public static void processData(){
+		int leftTick = MotorPort.A.getTachoCount();
+		int rightTick = MotorPort.C.getTachoCount();
+		MotorPort.A.resetTachoCount();
+        MotorPort.C.resetTachoCount();
+        
+		double deltaDistance = (leftTick + rightTick) / 2 * distPerTick;
+		double deltaHeading = ((rightTick - leftTick) * radiansPerTick) / 2;	
+		
+		totalHeading += deltaHeading;
+		
+		double deltaX = deltaDistance * Math.cos(totalHeading);
+		double deltaY = deltaDistance * Math.sin(totalHeading);
+		
+		X += deltaX;
+		Y += deltaY;
+	}
 }
