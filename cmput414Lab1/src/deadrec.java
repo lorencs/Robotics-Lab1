@@ -12,12 +12,16 @@ public class deadrec {
 	static double radiansPerTick = (2 * Math.PI) / ticksPerRotation;
 	
 	public static void main(String[] args) {
-		 int[][] command = {
+		int[][] command = {
 			      { 80, 60, 1},
 			      {-80, 80, 1},
 			      {	80, 80, 1}
 			    };		
 		
+		double totalHeading = 0;
+		double X = 0;
+		double Y = 0;
+		 
 		for (int i = 0; i < 3; i++){
 			int powerA = command[i][0];
 			int powerB = command[i][1];
@@ -33,6 +37,21 @@ public class deadrec {
 	        MotorPort.C.resetTachoCount();
 	        
 			while(true){
+				int leftTick = MotorPort.A.getTachoCount();
+				int rightTick = MotorPort.C.getTachoCount();
+				MotorPort.A.resetTachoCount();
+		        MotorPort.C.resetTachoCount();
+		        
+				double deltaDistance = (leftTick + rightTick) / 2 * distPerTick;
+				double deltaHeading = ((rightTick - leftTick) * radiansPerTick) / 2;	
+				
+				totalHeading += deltaHeading;
+				
+				double deltaX = deltaDistance * Math.cos(totalHeading);
+				double deltaY = deltaDistance * Math.sin(totalHeading);
+				
+				X += deltaX;
+				Y += deltaY;
 				
 				if (System.currentTimeMillis() - intervalTimer > timeInterval*1000){
 					break;
@@ -43,27 +62,8 @@ public class deadrec {
 		
 		MotorPort.A.controlMotor(100, BasicMotorPort.STOP);
         MotorPort.C.controlMotor(100, BasicMotorPort.STOP);
-		
-        /*MotorPort.A.resetTachoCount();
-        MotorPort.C.resetTachoCount();
-        double distToMove = Pprime/4;
-        double leftTick = MotorPort.A.getTachoCount();
-		double rightTick = MotorPort.C.getTachoCount();
-		double deltaDistance = ((Math.abs(leftTick) + Math.abs(rightTick)) / 2) * distPerTick;
-		//double deltaHeading = ((rightTick - leftTick) * radiansPerTick) / 2;
-		System.out.println("Hey there!");
-		System.out.println(distToMove);
-		while(deltaDistance < distToMove) {
-			leftTick = MotorPort.A.getTachoCount();
-			rightTick = MotorPort.C.getTachoCount();
-			deltaDistance = ((Math.abs(leftTick) + Math.abs(rightTick)) / 2) * distPerTick;
-			//double deltaHeading = ((rightTick - leftTick) * radiansPerTick) / 2;	
-			//LCD.drawInt(deltaDistance, 7, 0);
-			String dd = Double.toString(deltaDistance);
-			System.out.println(dd);
-			//LCD.drawString(dd, 7, 0);
-		}*/
- 
+		   
+        System.out.println("Heading: " + Math.floor((totalHeading * 180/Math.PI)* 100) / 100);
         
         Button.waitForPress();
 
