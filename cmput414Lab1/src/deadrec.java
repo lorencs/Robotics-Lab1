@@ -16,8 +16,8 @@ public class deadrec {
 	
 	public static void main(String[] args) {
 		int[][] command = {
-			      { 80, 60, 1},
-			      {-80, 80, 1},
+			      { 80, 80, 2},
+			      { 60, -60, 2},
 			      {	80, 80, 1}
 			    };		
 		
@@ -39,7 +39,15 @@ public class deadrec {
 	        MotorPort.A.resetTachoCount();
 	        MotorPort.C.resetTachoCount();
 	        
+	        long delayTimer = System.currentTimeMillis();
+	        
 			while(true){
+				if (System.currentTimeMillis() - delayTimer <100){
+					continue;
+				} else {
+					delayTimer = System.currentTimeMillis();
+				}
+				
 				processData();
 				
 				if (System.currentTimeMillis() - intervalTimer > timeInterval*1000){
@@ -65,8 +73,8 @@ public class deadrec {
 	}
 
 	public static void processData(){
-		int leftTick = MotorPort.A.getTachoCount();
-		int rightTick = MotorPort.C.getTachoCount();
+		int leftTick = MotorPort.C.getTachoCount();
+		int rightTick = MotorPort.A.getTachoCount();
 		MotorPort.A.resetTachoCount();
         MotorPort.C.resetTachoCount();
         
