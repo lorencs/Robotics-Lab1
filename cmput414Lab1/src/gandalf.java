@@ -20,8 +20,9 @@ public class gandalf {
 		LightSensor light1 = new LightSensor(SensorPort.S1);
 		LightSensor light2 = new LightSensor(SensorPort.S4);
 		
-		int minThreshold = 300;
+		int minLightThreshold = 300;
 	    String state = "explore";
+	    int minSpeed = 50;
 	    
 	    int lightFound = 0;
 	    double totalHeading = 0;
@@ -78,7 +79,7 @@ public class gandalf {
 		        	state = "moving";
 		        }
 	        } else if (state.equals("moving")){
-	        	int powerA = lightRec1 -
+	        	int powerA = (lightRec1 - minLightThreshold) / (minSpeed);
 	        }
 	        
 
