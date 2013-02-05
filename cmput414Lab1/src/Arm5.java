@@ -11,12 +11,7 @@ public class Arm5 {
 	// The LEFT button will save the first point
 	// The RIGHT button will save the second point
 	// Distance is calculated right after pressing the RIGHT button
-	
-	static double theta1Rad;
-	static double theta2Rad;
-	static double theta1Deg;
-	static double theta2Deg;
-	
+		
 	static double L1 = 144;
 	static double L2 = 95;
 	
@@ -26,12 +21,6 @@ public class Arm5 {
 	static double y2;
 	
 	public static void main(String[] args) {
-		// SPECIFY ARGUMENT
-		theta1Deg = -50;
-		theta2Deg = -50;
-		theta1Rad = theta1Deg * Math.PI / 180;
-		theta2Rad = theta2Deg * Math.PI / 180;
-		
 		boolean part1 = true;
 		
 		double tA; // in radians

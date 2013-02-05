@@ -16,8 +16,8 @@ public class Arm6 {
 	
 	
 	// SPECIFY ARGUEMNT HERE/////
-	static double x = 10;      //
-	static double y = -140;    //
+	static double x = 94;      //
+	static double y = -64;    //
 	/////////////////////////////
 	
 	public static boolean insideCircle(double x, double y, double radius){
@@ -41,18 +41,26 @@ public class Arm6 {
 		return true;
 	}
 	
-	public static void moveTo(double xa, double ya){
+	public static void moveTo(double x, double y){
 		//theta1Rad = theta1Deg * Math.PI / 180;
 		//theta2Rad = theta2Deg * Math.PI / 180;
 		boolean moveit = true;
 		
 		double D = (x*x + y*y - a1*a1 - a2*a2)/(2*a1*a2);
 		
-		double theta2sol1 = Math.atan(Math.sqrt(1-D*D)/D);
+		/*double theta2sol1 = Math.atan(Math.sqrt(1-D*D)/D);
 		double theta2sol2 = Math.atan(-1*Math.sqrt(1-D*D)/D);
 		
 		double theta1sol1 = Math.atan(y/x) - Math.atan((a2*Math.sin(theta2sol1))/(a1+a2*Math.cos(theta2sol1)));
 		double theta1sol2 = Math.atan(y/x) - Math.atan((a2*Math.sin(theta2sol2))/(a1+a2*Math.cos(theta2sol2)));
+		*/
+		
+		double theta2sol1 = Math.atan2(Math.sqrt(1-D*D), D);
+		double theta2sol2 = Math.atan2(-1*Math.sqrt(1-D*D), D);
+		
+		double theta1sol1 = Math.atan2(y, x) - Math.atan2((a2*Math.sin(theta2sol1)), (a1+a2*Math.cos(theta2sol1)));
+		double theta1sol2 = Math.atan2(y, x) - Math.atan2((a2*Math.sin(theta2sol2)), (a1+a2*Math.cos(theta2sol2)));
+		
 		
 		System.out.println("t1s1: " + Math.floor(theta1sol1 * 180/Math.PI * 100) / 100);
 		System.out.println("t2s1: " + Math.floor(theta2sol1 * 180/Math.PI * 100) / 100);
