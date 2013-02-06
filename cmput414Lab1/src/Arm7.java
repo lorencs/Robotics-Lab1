@@ -85,17 +85,24 @@ public class Arm7 {
 			moveit = false;
 		}
 		
+		// "virtually" go back to origin
+		double t1origin = -1 *(MotorPort.A.getTachoCount() * (Math.PI / 180));
+		double t2origin = -1 *(MotorPort.B.getTachoCount() * (Math.PI / 180));
+		
+		theta1 += t1origin;
+		theta2 += t2origin;
+		
 		if (moveit){
 			if (theta1 > 0) {
-				MotorPort.A.controlMotor(62, BasicMotorPort.FORWARD);
+				MotorPort.A.controlMotor(60, BasicMotorPort.FORWARD);
 			} else {
-				MotorPort.A.controlMotor(62, BasicMotorPort.BACKWARD);
+				MotorPort.A.controlMotor(60, BasicMotorPort.BACKWARD);
 			}
 			
 			if (theta2 > 0){		
-				MotorPort.B.controlMotor(62, BasicMotorPort.FORWARD);
+				MotorPort.B.controlMotor(60, BasicMotorPort.FORWARD);
 			} else {
-				MotorPort.B.controlMotor(62, BasicMotorPort.BACKWARD);
+				MotorPort.B.controlMotor(60, BasicMotorPort.BACKWARD);
 			}
 		}
 		
@@ -155,54 +162,8 @@ public class Arm7 {
 		System.out.println("Midpoint: (" + Math.floor(x*100)/100 + "," + Math.floor(y*100)/100 + ")");
 	}
 	
-	public static void moveBackToOrigin(){
-		// set target angles as negative of current angles
-		double t1target = -1 *(MotorPort.A.getTachoCount() * (Math.PI / 180));
-		double t2target = -1 *(MotorPort.B.getTachoCount() * (Math.PI / 180));
-		
-		boolean doneA = false;
-		boolean doneB = false;
-		
-		if (t1target > 0) {
-			MotorPort.A.controlMotor(62, BasicMotorPort.FORWARD);
-		} else {
-			MotorPort.A.controlMotor(62, BasicMotorPort.BACKWARD);
-		}
-		
-		if (t2target > 0){		
-			MotorPort.B.controlMotor(62, BasicMotorPort.FORWARD);
-		} else {
-			MotorPort.B.controlMotor(62, BasicMotorPort.BACKWARD);
-		}
-		
-		MotorPort.A.resetTachoCount();
-		MotorPort.B.resetTachoCount();
-		
-		while(true){
-			double t1cur = MotorPort.A.getTachoCount() * (Math.PI / 180);
-			double t2cur = MotorPort.B.getTachoCount() * (Math.PI / 180);
-			
-			if (Math.abs(t1cur) >= Math.abs(t1target)){
-				doneA = true;
-				MotorPort.A.controlMotor(100, BasicMotorPort.STOP);
-			}
-			
-			if (Math.abs(t2cur) >= Math.abs(t2target)){
-				doneB = true;
-				MotorPort.B.controlMotor(100, BasicMotorPort.STOP);
-			}
-			
-			if (doneA && doneB){
-				break;
-			}
-		}
-	}
-	
 	public static void main(String[] args) {
-		getPoints();
-		
-		moveBackToOrigin();
-		
+		getPoints();		
 		moveToTarget();
 		
 		//start motors
